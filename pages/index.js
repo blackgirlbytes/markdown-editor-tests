@@ -1,71 +1,71 @@
-import { useCallback, useEffect, useState } from 'react'
-import Button from '../components/Button'
-import ClickCount from '../components/ClickCount'
-import styles from '../styles/home.module.css'
+/*
+Create a basic markdown editor in Next.js with the following features:
+- Use react hooks
+- Create state for markdown with default text "type markdown here"
+- A text area where users can write markdown 
+- Show a live preview of the markdown text as I type
+- Support for basic markdown syntax like headers, bold, italics 
+- Use React markdown npm package 
+- The markdown text and resulting HTML should be saved in the component's state and updated in real time 
+*/
 
-function throwError() {
-  console.log(
-    // The function body() is not defined
-    document.body()
-  )
-}
+import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import styled from 'styled-components';
 
-function Home() {
-  const [count, setCount] = useState(0)
-  const increment = useCallback(() => {
-    setCount((v) => v + 1)
-  }, [setCount])
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem;
+`;
 
-  useEffect(() => {
-    const r = setInterval(() => {
-      increment()
-    }, 1000)
+const TextArea = styled.textarea`
+  width: 100%;
+  height: 20rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  resize: none;
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+  }
+`;
 
-    return () => {
-      clearInterval(r)
-    }
-  }, [increment])
+const Preview = styled(ReactMarkdown)`
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+`;
+
+const Index = () => {
+  const [markdown, setMarkdown] = useState('## markdown preview');
+
+  const handleChange = (e) => {
+    setMarkdown(e.target.value);
+  };
 
   return (
-    <main className={styles.main}>
-      <h1>Fast Refresh Demo</h1>
-      <p>
-        Fast Refresh is a Next.js feature that gives you instantaneous feedback
-        on edits made to your React components, without ever losing component
-        state.
-      </p>
-      <hr className={styles.hr} />
-      <div>
-        <p>
-          Auto incrementing value. The counter won't reset after edits or if
-          there are errors.
-        </p>
-        <p>Current value: {count}</p>
-      </div>
-      <hr className={styles.hr} />
-      <div>
-        <p>Component with state.</p>
-        <ClickCount />
-      </div>
-      <hr className={styles.hr} />
-      <div>
-        <p>
-          The button below will throw 2 errors. You'll see the error overlay to
-          let you know about the errors but it won't break the page or reset
-          your state.
-        </p>
-        <Button
-          onClick={(e) => {
-            setTimeout(() => document.parentNode(), 0)
-            throwError()
-          }}
-        >
-          Throw an Error
-        </Button>
-      </div>
-      <hr className={styles.hr} />
-    </main>
-  )
-}
+    <Container>
+      <TextArea
+        value={markdown}
+        onChange={handleChange}
+        placeholder="Type markdown here"
+      />
 
-export default Home
+      <Preview>{markdown}</Preview>
+    </Container>
+  );
+};
+
+export default Index;
